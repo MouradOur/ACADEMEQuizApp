@@ -1,3 +1,4 @@
+// Pages/Quiz.jsx
 import QuestionCards from "../components/QuestionCards";
 import { useState } from "react";
 import { questions } from "../data/questions";
@@ -10,31 +11,45 @@ const Quiz = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const currentQuestion = questions[currentIndex];
+    const progress = ((currentIndex + 1) / questions.length) * 100;
 
     const handleAnswer = (persona) => {
         const newAnswers = [...answers, persona];
 
         if (currentIndex + 1 === questions.length) {
-            // Last question → calculate and navigate
             const result = PersonaCalculator(newAnswers);
             navigate("/results", {
                 state: { persona: result },
             });
         } else {
-            // Not last question → go to next
             setAnswers(newAnswers);
             setCurrentIndex(currentIndex + 1);
         }
     };
 
     return (
-        <>
-            <p>Question {currentIndex + 1} of {questions.length}</p>
-            <QuestionCards
-                question={currentQuestion}
-                onAnswer={handleAnswer}
-            />
-        </>
+        <div className="quiz-container">
+            <div className="quiz-card">
+                <div className="quiz-header">
+                    <div className="progress-info">
+                        <span className="question-counter">
+                            Question {currentIndex + 1} of {questions.length}
+                        </span>
+                        <span className="progress-percentage">{Math.round(progress)}%</span>
+                    </div>
+                    <div className="progress-bar-container">
+                        <div
+                            className="progress-bar-fill"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+                </div>
+                <QuestionCards
+                    question={currentQuestion}
+                    onAnswer={handleAnswer}
+                />
+            </div>
+        </div>
     );
 };
 
